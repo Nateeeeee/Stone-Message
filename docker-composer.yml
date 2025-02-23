@@ -1,0 +1,8 @@
+services:
+  flask:
+    container_name: chatflask
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    ports:
+      - "8083:8083"
