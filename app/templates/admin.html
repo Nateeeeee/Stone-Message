@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel de Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -10,7 +9,47 @@
     <div class="admin-container">
         <h1>Painel de Admin</h1>
         <p>Bem-vindo, {{ session['username'] }}!</p>
-        <a href="{{ url_for('index') }}">Voltar ao Chat</a>
+
+        <!-- Botão para gerar código de registro -->
+        <form action="{{ url_for('generate_code') }}" method="POST">
+            <button type="submit">Gerar Código de Registro</button>
+        </form>
+
+        <!-- Botão para voltar ao chat -->
+        <form action="{{ url_for('index') }}" method="GET">
+            <button type="submit">Voltar ao Chat</button>
+        </form>
+
+        <!-- Seção para exibir o código de registro gerado -->
+        {% if registration_code %}
+            <div class="registration-code">
+                <h2>Código de Registro Gerado</h2>
+                <p>{{ registration_code }}</p>
+            </div>
+        {% endif %}
+
+        <!-- Seção para exibir os códigos de registro gerados -->
+        <h2>Códigos de Registro</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for code in registration_codes %}
+                    <tr>
+                        <td>{{ code }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_code', code=code) }}" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este código?')">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
         <h2>Usuários Registrados</h2>
         <table>

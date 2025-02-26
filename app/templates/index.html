@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoveChat</title>
+    <title>Stone Messages</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="/path/to/icon.png"> <!-- Opcional: caminho para um ícone -->
 </head>
 <body>
     <div class="chat-container">
@@ -16,11 +17,11 @@
             {% endif %}
             <a href="{{ url_for('logout') }}">Logout</a>
             <a href="{{ url_for('change_password') }}">Mudar Senha</a>
+            <a href="#" id="darkModeToggle">Modo Escuro</a> <!-- Botão para alternar o modo escuro -->
         </div>
 
         <div class="chat-header">
-            <h1>LoveChat</h1>
-            <p>Bem-vindo, {{ username }}!</p>
+            <h1>Stone Messages</h1>
         </div>
         <div class="chat-messages" id="messages">
             {% for message in messages %}

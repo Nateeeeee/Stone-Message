@@ -10,6 +10,12 @@ body {
     background-color: #FFB3CD;
 }
 
+/* Estilos para o modo escuro */
+body.dark-mode {
+    background-color: #8B0000; /* Rosa escuro */
+    color: #ffffff;
+}
+
 /* Container do chat */
 .chat-container {
     width: 100%;
@@ -22,6 +28,11 @@ body {
     margin: 0 auto;
     padding: 10px;
     box-sizing: border-box;
+    padding-bottom: 60px; /* Adiciona espaço para a caixa de digitação */
+}
+
+.chat-container.dark-mode {
+    background-color: #A52A2A; /* Rosa escuro */
 }
 
 /* Botão de menu */
@@ -67,6 +78,10 @@ body {
     border-radius: 10px 10px 0 0;
 }
 
+.chat-header.dark-mode {
+    background-color: #B22222; /* Rosa escuro */
+}
+
 .chat-header h1 {
     margin: 0;
     font-size: 24px;
@@ -101,10 +116,19 @@ body {
     align-self: flex-end;
 }
 
+.message.user.dark-mode {
+    background-color: #CD5C5C; /* Rosa escuro */
+}
+
 .message.server {
     background-color: #f0d6df;
     color: #000;
     align-self: flex-start;
+}
+
+.message.server.dark-mode {
+    background-color: #E9967A; /* Rosa escuro */
+    color: #ffffff;
 }
 
 .chat-input {
@@ -116,6 +140,11 @@ body {
     width: 100%;
     max-width: 400px;
     box-sizing: border-box;
+    z-index: 1000; /* Garante que a caixa de digitação fique acima das mensagens */
+}
+
+.chat-input.dark-mode {
+    background-color: #A52A2A; /* Rosa escuro */
 }
 
 #myMessage {
@@ -126,6 +155,11 @@ body {
     margin-right: 10px;
     background-color: #d67f9d;
     color: #fff;
+}
+
+#myMessage.dark-mode {
+    background-color: #B22222; /* Rosa escuro */
+    color: #ffffff;
 }
 
 #myMessage::placeholder {
@@ -139,6 +173,10 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+#sendBtn.dark-mode {
+    background-color: #CD5C5C; /* Rosa escuro */
 }
 
 #sendBtn:hover {
@@ -176,6 +214,23 @@ body {
     background-color: #f0d6df;
 }
 
+.admin-container td form {
+    display: inline;
+}
+
+.admin-container td button {
+    padding: 5px 10px;
+    background-color: #d67f9d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.admin-container td button:hover {
+    background-color: #ff9bbf;
+}
+
 .admin-container a {
     color: #d67f9d;
     text-decoration: none;
@@ -183,6 +238,25 @@ body {
 
 .admin-container a:hover {
     text-decoration: underline;
+}
+
+.admin-container form {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.admin-container form button {
+    padding: 10px 20px;
+    background-color: #d67f9d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.admin-container form button:hover {
+    background-color: #ff9bbf;
 }
 
 /* Estilos para formulários */
@@ -264,11 +338,34 @@ body {
     border: 1px solid #f5c6cb;
 }
 
+/* Estilos para a nova seção de código de registro */
+.registration-code {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f0d6df;
+    border: 1px solid #d67f9d;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.registration-code h2 {
+    margin: 0 0 10px;
+    color: #d67f9d;
+}
+
+.registration-code p {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #721c24;
+}
+
 /* Media Queries para dispositivos móveis */
 @media (max-width: 600px) {
     .chat-container {
         height: 100vh;
         border-radius: 0;
+        padding-bottom: 60px; /* Adiciona espaço para a caixa de digitação */
     }
 
     .chat-header {
@@ -282,6 +379,7 @@ body {
         right: 0;
         max-width: 100%;
         border-radius: 0;
+        z-index: 1000; /* Garante que a caixa de digitação fique acima das mensagens */
     }
 
     .form-container {
@@ -292,5 +390,16 @@ body {
     .admin-container {
         width: 100%;
         border-radius: 0;
+    }
+
+    .chat-messages {
+        padding: 10px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .message {
+        max-width: 90%;
+        word-wrap: break-word;
     }
 }
