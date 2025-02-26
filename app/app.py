@@ -6,6 +6,7 @@ import bcrypt
 import random
 import string
 import csv
+import pymysql
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua_chave_secreta'

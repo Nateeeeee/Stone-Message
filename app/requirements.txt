@@ -4,3 +4,4 @@ Flask-SQLAlchemy
 bcrypt
 python-socketio
 python-engineio
+pymysql
