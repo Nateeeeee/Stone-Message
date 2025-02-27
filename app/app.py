@@ -118,8 +118,8 @@ def register():
         registration_code = request.form['registration_code']
 
         # Verifica se o código de registro é válido
-        admin_user = User.query.filter_by(is_admin=True).first()
-        if not admin_user or registration_code != admin_user.registration_code:
+        valid_codes = read_registration_codes()
+        if registration_code not in valid_codes:
             flash('Código de registro inválido.', 'error')
             return redirect(url_for('register'))
 
@@ -134,6 +134,7 @@ def register():
             new_user = User(username=username, password=hashed_password)
             db.session.add(new_user)
             db.session.commit()
+            delete_registration_code(registration_code)  # Remove o código de registro usado
             flash('Registro realizado com sucesso! Faça login.', 'success')
             return redirect(url_for('login'))
     return render_template('register.html')
