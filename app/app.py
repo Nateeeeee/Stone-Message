@@ -7,8 +7,8 @@ import random
 import string
 import csv
 import pymysql
-import json
 from pywebpush import webpush, WebPushException
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua_chave_secreta'
@@ -20,7 +20,7 @@ socketio = SocketIO(app)
 VAPID_PUBLIC_KEY = "BKGeyfjwHzKcgPEM0I-XqudWHWiSVuOIFcBs5dLv5hOy9BhAaFbznVbsHqqi8zXzHcHefAMa0qpIuDVI4vAMKvI"
 VAPID_PRIVATE_KEY = "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR0hBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJHMHdhd0lCQVFRZ3hvbWtQWGk4cXJrYVZHMSsKQWhMSUNVMnlBV1NmdHVQMVl1a1NVVXlHL1BDaFJBTkNBQVNobnNuNDhCOHluSUR4RE5DUGw2cm5WaDFva2xiagppQlhBYk9YUzcrWVRzdlFZUUdoVzg1MVc3QjZxb3ZNMTh4M0IzbndER3RLcVNMZzFTT0x3RENyeQotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg"
 VAPID_CLAIMS = {
-    "sub": "Nate:jbplsyer406@gmail.com"
+    "sub": "mailto:jbplsyer406@gmail.com"
 }
 
 # Modelo de Usuário
@@ -37,6 +37,13 @@ class Message(db.Model):
     content = db.Column(db.String(500), nullable=False)
     username = db.Column(db.String(80), nullable=False)
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+# Modelo de Assinatura
+class Subscription(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    endpoint = db.Column(db.String(500), nullable=False)
+    p256dh = db.Column(db.String(500), nullable=False)
+    auth = db.Column(db.String(500), nullable=False)
 
 # Cria o banco de dados e o usuário admin (execute apenas uma vez)
 with app.app_context():
@@ -281,9 +288,20 @@ def delete_user(user_id):
 @app.route('/subscribe', methods=['POST'])
 def subscribe():
     subscription_info = request.json
-    # Armazene a assinatura no banco de dados ou em outro local
-    # Aqui, apenas imprimimos para fins de demonstração
-    print(subscription_info)
+    endpoint = subscription_info['endpoint']
+    p256dh = subscription_info['keys']['p256dh']
+    auth = subscription_info['keys']['auth']
+
+    # Verifica se a assinatura já existe
+    existing_subscription = Subscription.query.filter_by(endpoint=endpoint).first()
+    if not existing_subscription:
+        new_subscription = Subscription(endpoint=endpoint, p256dh=p256dh, auth=auth)
+        db.session.add(new_subscription)
+        db.session.commit()
+        print('Assinatura armazenada com sucesso!')
+    else:
+        print('Assinatura já existe!')
+
     return jsonify({"success": True}), 200
 
 # SocketIO: Recebe e retransmite mensagens
@@ -313,9 +331,14 @@ def handleMessage(msg):
             print("Erro ao enviar notificação push: {}", ex)
 
 def get_all_subscriptions():
-    # Função para obter todas as assinaturas armazenadas
-    # Aqui, apenas retornamos uma lista vazia para fins de demonstração
-    return []
+    subscriptions = Subscription.query.all()
+    return [{
+        'endpoint': subscription.endpoint,
+        'keys': {
+            'p256dh': subscription.p256dh,
+            'auth': subscription.auth
+        }
+    } for subscription in subscriptions]
 
 if __name__ == '__main__':
     socketio.run(app,host="0.0.0.0", port=8083, debug=True, allow_unsafe_werkzeug=True)

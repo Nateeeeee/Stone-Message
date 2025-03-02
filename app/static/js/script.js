@@ -156,4 +156,14 @@ function urlB64ToUint8Array(base64String) {
 }
 
 // Inicializa a aplicação ao carregar a página
-window.onload = initialize;
+window.onload = function() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/js/service-worker.js')
+        .then(function(registration) {
+            console.log('Service Worker registrado com sucesso:', registration);
+        })
+        .catch(function(error) {
+            console.log('Falha ao registrar o Service Worker:', error);
+        });
+    }
+};
