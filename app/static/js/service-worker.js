@@ -19,3 +19,22 @@ self.addEventListener('fetch', function(event) {
         })
     );
 });
+
+self.addEventListener('push', function(event) {
+    var data = event.data.json();
+    var options = {
+        body: data.content,
+        icon: '/static/icons/icon-192x192.png',
+        badge: '/static/icons/icon-192x192.png'
+    };
+    event.waitUntil(
+        self.registration.showNotification(data.username, options)
+    );
+});
+
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(
+        clients.openWindow('/')
+    );
+});

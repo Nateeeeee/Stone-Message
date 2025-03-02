@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_socketio import SocketIO, send
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -7,6 +7,8 @@ import random
 import string
 import csv
 import pymysql
+import json
+from pywebpush import webpush, WebPushException
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua_chave_secreta'
@@ -14,6 +16,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Nate:Natecrusader25@147
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app)
+
+VAPID_PUBLIC_KEY = "BKGeyfjwHzKcgPEM0I-XqudWHWiSVuOIFcBs5dLv5hOy9BhAaFbznVbsHqqi8zXzHcHefAMa0qpIuDVI4vAMKvI"
+VAPID_PRIVATE_KEY = "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR0hBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJHMHdhd0lCQVFRZ3hvbWtQWGk4cXJrYVZHMSsKQWhMSUNVMnlBV1NmdHVQMVl1a1NVVXlHL1BDaFJBTkNBQVNobnNuNDhCOHluSUR4RE5DUGw2cm5WaDFva2xiagppQlhBYk9YUzcrWVRzdlFZUUdoVzg1MVc3QjZxb3ZNMTh4M0IzbndER3RLcVNMZzFTT0x3RENyeQotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg"
+VAPID_CLAIMS = {
+    "sub": "Nate:jbplsyer406@gmail.com"
+}
 
 # Modelo de Usuário
 class User(db.Model):
@@ -269,6 +277,15 @@ def delete_user(user_id):
     flash('Usuário excluído com sucesso!', 'success')
     return redirect(url_for('admin_panel'))
 
+# Rota para receber a assinatura do cliente
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    subscription_info = request.json
+    # Armazene a assinatura no banco de dados ou em outro local
+    # Aqui, apenas imprimimos para fins de demonstração
+    print(subscription_info)
+    return jsonify({"success": True}), 200
+
 # SocketIO: Recebe e retransmite mensagens
 @socketio.on('message')
 def handleMessage(msg):
@@ -281,6 +298,24 @@ def handleMessage(msg):
 
     # Envia a mensagem para todos os clientes, exceto o remetente
     send({'username': username, 'content': msg}, broadcast=True, include_self=False)
+
+    # Envia uma notificação push para todos os clientes
+    subscriptions = get_all_subscriptions()  # Função que retorna todas as assinaturas armazenadas
+    for subscription in subscriptions:
+        try:
+            webpush(
+                subscription_info=subscription,
+                data=json.dumps({'username': username, 'content': msg}),
+                vapid_private_key=VAPID_PRIVATE_KEY,
+                vapid_claims=VAPID_CLAIMS
+            )
+        except WebPushException as ex:
+            print("Erro ao enviar notificação push: {}", ex)
+
+def get_all_subscriptions():
+    # Função para obter todas as assinaturas armazenadas
+    # Aqui, apenas retornamos uma lista vazia para fins de demonstração
+    return []
 
 if __name__ == '__main__':
     socketio.run(app,host="0.0.0.0", port=8083, debug=True, allow_unsafe_werkzeug=True)
