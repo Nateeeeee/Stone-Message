@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import bcrypt
@@ -314,7 +314,7 @@ def handleMessage(msg):
     db.session.add(new_message)
     db.session.commit()
 
-    # Envia a mensagem para todos os clientes, exceto o remetente
+    # Envia a mensagem para todos os clientes, incluindo o remetente
     send({'username': username, 'content': msg}, broadcast=True, include_self=False)
 
     # Envia uma notificação push para todos os clientes
@@ -328,7 +328,7 @@ def handleMessage(msg):
                 vapid_claims=VAPID_CLAIMS
             )
         except WebPushException as ex:
-            print("Erro ao enviar notificação push: {}", ex)
+            print(f"Erro ao enviar notificação push: {ex}")
 
 def get_all_subscriptions():
     subscriptions = Subscription.query.all()
@@ -341,4 +341,4 @@ def get_all_subscriptions():
     } for subscription in subscriptions]
 
 if __name__ == '__main__':
-    socketio.run(app,host="0.0.0.0", port=8083, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(app, host="0.0.0.0", port=8083, debug=True, allow_unsafe_werkzeug=True)
