@@ -1,6 +1,6 @@
 {
     "name": "Stone Messages",
-    "short_name": "Chat",
+    "short_name": "Stone",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
