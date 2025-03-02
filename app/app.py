@@ -10,7 +10,7 @@ import pymysql
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua_chave_secreta'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Nate:Natecrusader25@jsgwsook88wc8wgc04s4wk8o:3306/default'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://Nate:Natecrusader25@147.93.67.17:5432/default'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app)
