@@ -5,3 +5,5 @@ bcrypt
 python-socketio
 python-engineio
 pymysql
+pywebpush
+cryptography
