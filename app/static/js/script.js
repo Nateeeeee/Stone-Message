@@ -14,7 +14,7 @@ function sendNotification(message) {
     if (Notification.permission === 'granted') {
         new Notification('Nova mensagem', {
             body: 'Uma pedra enviada por ' + message.username + ' quebrou sua janela',
-            icon: '/path/to/icon.png' // Opcional: caminho para um ícone
+            icon: '/static/icons/icon-192x192' // Opcional: caminho para um ícone
         });
     }
 }
@@ -121,7 +121,7 @@ function initialize() {
 }
 
 function subscribeUser(swReg) {
-    const applicationServerKey = urlB64ToUint8Array('YOUR_PUBLIC_VAPID_KEY');
+    const applicationServerKey = urlB64ToUint8Array('BKGeyfjwHzKcgPEM0I-XqudWHWiSVuOIFcBs5dLv5hOy9BhAaFbznVbsHqqi8zXzHcHefAMa0qpIuDVI4vAMKvI');
     swReg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: applicationServerKey
